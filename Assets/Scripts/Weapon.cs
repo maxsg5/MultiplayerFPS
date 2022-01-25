@@ -2,12 +2,17 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Timers;
 using UnityEngine;
+using UnityEngine.InputSystem;
+using StarterAssets;
+
 
 public class Weapon : MonoBehaviour
 {
     [SerializeField]
     private GameObject bulletHolePrefab;
-
+    private StarterAssetsInputs _input;
+    private PlayerInput _playerInput;
+    private bool IsCurrentDeviceMouse => _playerInput.currentControlScheme == "KeyboardMouse";
     float elapsedTime = 0f;
     float fireRateTime = 0f;
     float fireRateResetDelay = 0.5f; //The delay it takes for accuracy to be perfect again (first shot accuracy)
@@ -15,6 +20,8 @@ public class Weapon : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        //_input = transform.parent.transform.parent.GetComponent<StarterAssetsInputs>();
+		_playerInput = transform.parent.transform.parent.GetComponent<PlayerInput>();
        
     }
 
@@ -38,12 +45,15 @@ public class Weapon : MonoBehaviour
             fireRateTime = 0f;
         }
 
-        //if(elapsedTime > 1f)
-        //{
+        // if(elapsedTime > 1f)
+        // {
         //    Shoot(transform.position, transform.forward);
         //    elapsedTime = 0f;
-        //}
+        // }
     }
+
+    
+    
 
     public void Shoot(Vector3 orgin, Vector3 direction)
     {
