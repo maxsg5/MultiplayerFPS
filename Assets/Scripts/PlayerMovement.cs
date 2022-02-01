@@ -5,12 +5,7 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
-
-    /// NEW INPUT SYSTEM VARIABLE
     public InputMaster controls; // Inputs NEW INPUT SYSTEM
-    /// NEW INPUT SYSTEM VARIABLE
-    
-
     public CharacterController controller; //reference to the CharacterController component
     public Transform groundCheck; // a position marking where to check if the player is grounded
     public float groundDistance = 0.4f; // distance for the groundCheck ray
@@ -22,26 +17,51 @@ public class PlayerMovement : MonoBehaviour
     public float gravity = -9.81f; // the gravity of the player
 
 
-    // Here we are subscribing events (methods) to the input systems actions
+    // Here we are initializing the InputSystem.
     void Awake()
     {
         controls = new InputMaster(); // you have to intialize the controls in awake because Unity doesn't allow you to just click and drag via the Inspector. IK it's some BS.        
-        controls.Player.Move.performed += ctx => PlayerMove(ctx.ReadValue<Vector2>()); // this is the method that will be called when the player moves
+    }
+
+    private void OnEnable()
+    {
+        controls.Enable(); 
+    }
+    private void OnDisable()
+    {
+        controls.Disable();
     }
     
-    //Why TF won't this method even execute??????? LIAM HELP ME
-    void PlayerMove(Vector2 direction)
-    {
-        Debug.Log("Move Value " + direction);
 
-    }
     // Update is called once per frame
     void Update()
     {
+
+        isGrounded = Physics.CheckSphere(groundCheck.position, groundDistance, groundMask); // check if the player is grounded
+
+        if (isGrounded && velocity.y < 0) // if the player is grounded and is falling
+            velocity.y = -2f; // set the velocity to -2f
+        
+        
+        float x = controls.Player.Move.ReadValue<Vector3>().x; // get the x value of the movement
+        float z = controls.Player.Move.ReadValue<Vector3>().z; // get the z value of the movement
+
+        Vector3 move = transform.right * x + transform.forward * z; // create a vector3 for the movement
+
+        controller.Move(move * speed * Time.deltaTime); // move the player
+
+        // if the jump button is pressed and the player is grounded
+        if(controls.Player.Jump.ReadValue<float>() > 0 && isGrounded) 
+            velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity); // calculate the velocity of the jump
+        
+        velocity.y += gravity * Time.deltaTime; // add the gravity to the velocity
+
+        controller.Move(velocity * Time.deltaTime); // Jump the player
+
+
         //OLD INPUT SYSTEM STUFF UNCOMMENT IF YOU WANT TO USE OLD INPUT SYSTEM
 
         // isGrounded = Physics.CheckSphere(groundCheck.position, groundDistance, groundMask); // check if the player is grounded
-
         // if (isGrounded && velocity.y < 0) // if the player is grounded and is falling
         // {
         //     velocity.y = -2f; // set the velocity to -2f
@@ -49,14 +69,12 @@ public class PlayerMovement : MonoBehaviour
 
         // float x = Input.GetAxis("Horizontal");
         // float z = Input.GetAxis("Vertical");
-        
 
         // Vector3 move = transform.right * x + transform.forward * z;
 
         // controller.Move(move * speed * Time.deltaTime);
 
         // if(Input.GetButtonDown("Jump") && isGrounded){
-            
         //     velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
         // }
 
