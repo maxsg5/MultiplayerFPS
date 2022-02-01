@@ -43,8 +43,8 @@ public class PlayerMovement : MonoBehaviour
             velocity.y = -2f; // set the velocity to -2f
         
         
-        float x = controls.Player.Move.ReadValue<Vector3>().x; // get the x value of the movement
-        float z = controls.Player.Move.ReadValue<Vector3>().z; // get the z value of the movement
+        float x = controls.Player.Move.ReadValue<Vector2>().x; // get the x value of the movement
+        float z = controls.Player.Move.ReadValue<Vector2>().y; // get the z value of the movement
 
         Vector3 move = transform.right * x + transform.forward * z; // create a vector3 for the movement
 

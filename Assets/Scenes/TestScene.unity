@@ -197,6 +197,7 @@ MonoBehaviour:
   isGrounded: 0
   jumpHeight: 3
   speed: 12
+  velocity: {x: 0, y: 0, z: 0}
   gravity: -9.81
 --- !u!1 &140173526
 GameObject:
@@ -451,7 +452,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e240be388636adf40ac308d7c868e2fe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mouseSensitivity: 100
+  mouseSensitivityX: 10
+  mouseSensitivityY: 10
+  controllerLookSensitivity: 2000
   playerBody: {fileID: 25882991}
 --- !u!1001 &1833268361
 PrefabInstance:
