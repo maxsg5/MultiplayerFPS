@@ -2,11 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-
+[RequireComponent(typeof(CharacterController))]
+[RequireComponent(typeof(BetterInputManager))]
 public class PlayerMovement : MonoBehaviour
 {
-    public InputMaster controls; // Inputs NEW INPUT SYSTEM
-    public CharacterController controller; //reference to the CharacterController component
+    
     public Transform groundCheck; // a position marking where to check if the player is grounded
     public float groundDistance = 0.4f; // distance for the groundCheck ray
     public LayerMask groundMask; // mask for the ground layer
@@ -15,22 +15,20 @@ public class PlayerMovement : MonoBehaviour
     public float speed = 12f; // movement speed
     public Vector3 velocity; // the velocity of the player
     public float gravity = -9.81f; // the gravity of the player
+    //public float horizontalSensitivity = 10f; // WARNING!!! THIS MUST MATCH VALUE IN CinamachinePOVExtension.cs!!!!!!!!!!!!!!!!!!!!!!
+    
+    float xRotation = 0f;
+    private BetterInputManager inputManager; // NEW INPUT SYSTEM
+
+    private CharacterController controller; //reference to the CharacterController component
 
 
-    // Here we are initializing the InputSystem.
-    void Awake()
+    private void Start()
     {
-        controls = new InputMaster(); // you have to intialize the controls in awake because Unity doesn't allow you to just click and drag via the Inspector. IK it's some BS.        
+         controller = GetComponent<CharacterController>();
+         inputManager = BetterInputManager.Instance;
     }
 
-    private void OnEnable()
-    {
-        controls.Enable(); 
-    }
-    private void OnDisable()
-    {
-        controls.Disable();
-    }
     
 
     // Update is called once per frame
@@ -42,21 +40,24 @@ public class PlayerMovement : MonoBehaviour
         if (isGrounded && velocity.y < 0) // if the player is grounded and is falling
             velocity.y = -2f; // set the velocity to -2f
         
-        
-        float x = controls.Player.Move.ReadValue<Vector2>().x; // get the x value of the movement
-        float z = controls.Player.Move.ReadValue<Vector2>().y; // get the z value of the movement
+        Vector2 moveInput = inputManager.GetPlayerMovement(); // get the move input from the input manager
 
-        Vector3 move = transform.right * x + transform.forward * z; // create a vector3 for the movement
+        //Vector3 move = new Vector3(moveInput.x,0,moveInput.y); // get the movement vector
+        Vector3 move = transform.right * moveInput.x + transform.forward * moveInput.y; // create a vector3 for the movement
 
         controller.Move(move * speed * Time.deltaTime); // move the player
 
         // if the jump button is pressed and the player is grounded
-        if(controls.Player.Jump.ReadValue<float>() > 0 && isGrounded) 
+        if( inputManager.PlayerJumpedThisFrame() && isGrounded) 
             velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity); // calculate the velocity of the jump
         
         velocity.y += gravity * Time.deltaTime; // add the gravity to the velocity
 
         controller.Move(velocity * Time.deltaTime); // Jump the player
+
+        
+       // transform.Rotate(Vector3.up, inputManager.GetMouseDelta().x * Time.deltaTime * horizontalSensitivity); // rotate the player
+
 
 
         //OLD INPUT SYSTEM STUFF UNCOMMENT IF YOU WANT TO USE OLD INPUT SYSTEM

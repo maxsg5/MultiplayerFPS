@@ -6,8 +6,8 @@ public class MouseLook : MonoBehaviour
 {
 
     private InputMaster controls; // Inputs NEW INPUT SYSTEM
-    public float mouseSensitivityX = 10f; // the sensitivity of the mouse
-    public float mouseSensitivityY = 10f; // the sensitivity of the mouse
+    public float mouseSensitivityX = 100f; // the sensitivity of the mouse
+    public float mouseSensitivityY = 100f; // the sensitivity of the mouse
 
     public float controllerLookSensitivity = 2000f; // this sensitivity works well for controller analog sticks
     public Transform playerBody;
@@ -40,9 +40,9 @@ public class MouseLook : MonoBehaviour
     void Update()
     {
         //NEW INPUT SYSTEM
-        float mouseX = controls.Player.Look.ReadValue<Vector2>().x * mouseSensitivityX * Time.deltaTime;
-        float mouseY = controls.Player.Look.ReadValue<Vector2>().y * mouseSensitivityY * Time.deltaTime;
-        Debug.Log(controls.Player.Look.ReadValue<Vector2>());
+        //float mouseX = controls.Player.Look.ReadValue<Vector2>().x * mouseSensitivityX * Time.deltaTime;
+        //float mouseY = controls.Player.Look.ReadValue<Vector2>().y * mouseSensitivityY * Time.deltaTime;
+        //Debug.Log(controls.Player.Look.ReadValue<Vector2>());
         
         //ANOTHER WAY TO READ MOUSE INPUT TRYING TO MAKE IT SMOOTH LIKE THE OLD INPUT SYSTEM. BUT THIS DOESN'T WORK.
         //float mouseX = controls.Player.MouseX.ReadValue<float>() * mouseSensitivity * Time.deltaTime;
@@ -50,8 +50,8 @@ public class MouseLook : MonoBehaviour
         //Debug.Log(controls.Player.MouseX.ReadValue<float>() + " " + controls.Player.MouseY.ReadValue<float>());
         
         //OLD INPUT SYSTEM
-        //float mouseX = Input.GetAxis("Mouse X") * mouseSensitivity * Time.deltaTime;
-        //float mouseY = Input.GetAxis("Mouse Y") * mouseSensitivity * Time.deltaTime;
+        float mouseX = Input.GetAxis("Mouse X") * mouseSensitivityX * Time.deltaTime;
+        float mouseY = Input.GetAxis("Mouse Y") * mouseSensitivityY * Time.deltaTime;
         //Debug.Log(Input.GetAxis("Mouse X") + " " + Input.GetAxis("Mouse Y"));
 
         xRotation -= mouseY;
